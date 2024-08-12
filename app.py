@@ -13,6 +13,7 @@ import torch
 import file_utils
 import imgproc
 import postprocessor
+import torch.backends.cudnn as cudnn
 from model import TraceModel
 from parse_config import parse_config
 
@@ -71,17 +72,18 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     # Base
-    parser.add_argument("-c", "--config_file", default="configs/trace.json", type=str, required=True)
-    parser.add_argument("-m", "--trained_model", type=str, required=True)
-    parser.add_argument("--url", type=str, default="0.0.0.0")
+    parser.add_argument("-c", "--config_file", default="./configs/trace_base.json", type=str)
+    parser.add_argument("-m", "--trained_model", default="./models/trace_wtw.pth", type=str)
+    parser.add_argument("--url", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=None)
-    parser.add_argument("--sample_path", type=str, default="./samples/")
+    parser.add_argument("--sample_path", type=str, default="./sample/1.jpg")
     # parameters
     parser.add_argument("--canvas_size", default=1024, type=int, help="Max size of image canvas")
     parser.add_argument("--mag_ratio", default=10, type=float, help="Image magnification ratio")
     parser.add_argument("--threshold1", default=0.2, type=float, help="Threshold for explicit edges")
     parser.add_argument("--threshold2", default=0.1, type=float, help="Threshold for implicit edges")
 
+    parser.add_argument("--cuda", default=False, type=str2bool, help="Use cuda to train model")
     # parse config file
     args = parser.parse_args()
     args = parse_config(args)
@@ -93,11 +95,17 @@ if __name__ == "__main__":
     # prepare model
     print("Loading weights from checkpoint (" + args.trained_model + ")")
     net = TraceModel()
-    if torch.cuda.is_available():
+
+    if args.cuda:
         net = net.cuda()
         net = torch.nn.DataParallel(net)
+
+    if args.cuda:
         net.load_state_dict(torch.load(args.trained_model))
+    else:
+        net.load_state_dict(torch.load(args.trained_model, map_location="cpu"))
     net.eval()
+
 
     # add sample images
     example_sample = []
