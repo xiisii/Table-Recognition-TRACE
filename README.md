@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TRACE: Table Reconstruction Aligned to Corner and Edges (ICDAR 2023)
 The official implementation of [TRACE](https://arxiv.org/abs/2305.00630), a table reconstruction method for image documents. TRACE reconstructs tables in a bottom-up manner, starting from low-level features like corners and edges, and then progressing to cells. Finally, it is able to localize table positions by combining the detected cells.
 
@@ -171,3 +172,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+=======
+# Table-Recognition-
+>>>>>>> 00e20c59acd9d9f7aa8841683b383d5e14f346a2
